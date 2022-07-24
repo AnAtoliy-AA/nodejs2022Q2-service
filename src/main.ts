@@ -5,6 +5,9 @@ import 'reflect-metadata';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const port = +process.env.PORT || 4000;
+  app.setGlobalPrefix('api');
+  console.log('Port running on: ', port);
   const config = new DocumentBuilder()
     .setTitle('REST API')
     .setDescription('The notes API description')
@@ -14,7 +17,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT || 4000);
+  await app.listen(port);
 }
 
 bootstrap();
