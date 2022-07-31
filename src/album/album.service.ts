@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { v4 as uuidv4, validate } from 'uuid';
 import { AlbumEntity } from './entities/album.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -73,12 +72,7 @@ export class AlbumService {
 
   async delete(albumId: string) {
     const result = await this.albumRepository.delete(albumId);
-    //   if (this._users.length !== filteredUsers.length) {
-    //     this._users = filteredUsers;
-    //   } else {
-    //     throw new NotFoundException('User not found.');
-    //   }
-    // }
+
     if (result.affected === 0) {
       throw new NotFoundException('Album not found.');
     }

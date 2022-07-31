@@ -80,7 +80,7 @@ export class TrackService {
     }
   }
 
-  async resetTrackId(trackId: string, albumId: string) {
+  async resetAlbumId(trackId: string, albumId: string) {
     const track = await this.getById(trackId);
 
     if (track.albumId === albumId) {
