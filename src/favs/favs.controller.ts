@@ -21,7 +21,7 @@ export class FavsController {
     const tracks = this.trackService.findAll();
     const artists = this.artistService.findAll();
     const albums = this.albumService.findAll();
-    return this.favsService.findAll(tracks, artists, await albums);
+    return this.favsService.findAll(tracks, await artists, await albums);
   }
 
   // track
@@ -40,16 +40,16 @@ export class FavsController {
 
   // artist
   @Post('artist/:id')
-  createArtist(@Param() id: string) {
+  async createArtist(@Param() id: string) {
     const artists = this.artistService.findAll();
-    return this.favsService.addArtist(id, artists);
+    return this.favsService.addArtist(id, await artists);
   }
 
   @Delete('artist/:id')
   @HttpCode(204)
-  removeArtist(@Param() id: string) {
+  async removeArtist(@Param() id: string) {
     const artists = this.artistService.findAll();
-    return this.favsService.removeArtist(id, artists);
+    return this.favsService.removeArtist(id, await artists);
   }
 
   // album
