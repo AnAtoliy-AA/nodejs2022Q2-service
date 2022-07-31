@@ -8,9 +8,10 @@ import {
 
 @Entity()
 export class User {
+  // @PrimaryGeneratedColumn()
   @PrimaryGeneratedColumn()
   @ApiProperty({ description: 'User identifier uuid v4', nullable: false })
-  id: string;
+  id: string | number;
 
   @Column()
   @ApiProperty({ description: 'User login', nullable: false })
@@ -27,11 +28,11 @@ export class User {
   })
   version: number;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  // @CreateDateColumn({ type: 'timestamp' })
   @ApiProperty({ description: 'User timestamp of creation', nullable: false })
   createdAt: number;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  // @CreateDateColumn({ type: 'timestamp' })
   @ApiProperty({
     description: 'User timestamp of last update',
     nullable: false,
@@ -52,5 +53,11 @@ export class User {
     this.version = version;
     this.createdAt = +createdAt;
     this.updatedAt = +updatedAt;
+  }
+
+  toResponse() {
+    const { id, login, version, createdAt, updatedAt } = this;
+
+    return { id, login, version, createdAt, updatedAt };
   }
 }
