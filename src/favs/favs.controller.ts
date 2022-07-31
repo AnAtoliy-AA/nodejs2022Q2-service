@@ -21,21 +21,21 @@ export class FavsController {
     const tracks = this.trackService.findAll();
     const artists = this.artistService.findAll();
     const albums = this.albumService.findAll();
-    return this.favsService.findAll(tracks, await artists, await albums);
+    return this.favsService.findAll(await tracks, await artists, await albums);
   }
 
   // track
   @Post('track/:id')
-  createTrack(@Param() id: string) {
+  async createTrack(@Param() id: string) {
     const tracks = this.trackService.findAll();
-    return this.favsService.addTrack(id, tracks);
+    return this.favsService.addTrack(id, await tracks);
   }
 
   @Delete('track/:id')
   @HttpCode(204)
-  removeTrack(@Param() id: string) {
+  async removeTrack(@Param() id: string) {
     const tracks = this.trackService.findAll();
-    return this.favsService.removeTrack(id, tracks);
+    return this.favsService.removeTrack(id, await tracks);
   }
 
   // artist

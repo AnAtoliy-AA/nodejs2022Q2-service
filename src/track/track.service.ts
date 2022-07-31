@@ -7,48 +7,41 @@ import {
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
-import { v4 as uuidv4, validate } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
-  private _tracks: TrackEntity[] = [];
+  constructor(
+    @InjectRepository(TrackEntity)
+    private trackRepository: Repository<TrackEntity>,
+  ) {}
 
-  create(dto: CreateTrackDto) {
+  async create(dto: CreateTrackDto) {
     const { name, artistId, albumId, duration } = dto;
 
     if (!name) {
       throw new HttpException('Empty required fields', HttpStatus.BAD_REQUEST);
     }
 
-    const id = uuidv4();
-    const createdAt: string = new Date(Date.now()).toDateString();
-    const updatedAt: string = new Date(Date.now()).toDateString();
-    const track = new TrackEntity(
-      id,
+    const createdTrack = this.trackRepository.create({
       name,
-      artistId || null,
-      albumId || null,
+      artistId,
+      albumId,
       duration,
-      createdAt,
-      updatedAt,
-    );
-    this._tracks.push(track);
-    return track;
+    });
+
+    return await this.trackRepository.save(createdTrack);
   }
 
-  findAll() {
-    return this._tracks;
+  async findAll() {
+    return await this.trackRepository.find();
   }
 
-  private validateId(id: string) {
-    if (!validate(id)) {
-      throw new HttpException('Not valid track id', HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  getById(trackId: string) {
-    this.validateId(trackId);
-    const findTrack = this._tracks.find((track) => track.id == trackId);
+  async getById(trackId: string) {
+    const findTrack = await this.trackRepository.findOne({
+      where: { id: trackId },
+    });
 
     if (!findTrack) {
       throw new NotFoundException('Track not found.');
@@ -57,18 +50,15 @@ export class TrackService {
     return findTrack;
   }
 
-  update(trackUniqueId: string, dto: UpdateTrackDto) {
-    if (!validate(trackUniqueId)) {
-      throw new HttpException('Not valid track id', HttpStatus.BAD_REQUEST);
+  async update(trackUniqueId: string, dto: UpdateTrackDto) {
+    const updatedTrack = await this.trackRepository.findOne({
+      where: { id: trackUniqueId },
+    });
+    if (!updatedTrack) {
+      throw new NotFoundException('track not found.');
     }
 
-    const index = this._tracks.findIndex((track) => track.id == trackUniqueId);
-
-    if (index === -1) {
-      throw new NotFoundException('Track not found.');
-    }
-
-    if (!dto.name || typeof dto.duration !== 'number') {
+    if (!dto.name) {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
@@ -78,46 +68,28 @@ export class TrackService {
       );
     }
 
-    const { id, name, artistId, albumId, duration, createdAt } =
-      this._tracks[index];
-
-    const updatedAt: string = new Date(Date.now()).toDateString();
-
-    this._tracks[index] = new TrackEntity(
-      id,
-      dto.name || name,
-      dto.artistId || artistId || null,
-      dto.albumId || albumId || null,
-      dto.duration || duration,
-      createdAt,
-      updatedAt,
-    );
-    return this._tracks[index];
+    Object.assign(updatedTrack, dto);
+    return updatedTrack;
   }
 
-  delete(trackId: string) {
-    if (!validate(trackId)) {
-      throw new HttpException('Not valid track id', HttpStatus.BAD_REQUEST);
-    }
-    const filteredTracks = this._tracks.filter((track) => track.id != trackId);
+  async delete(trackId: string) {
+    const result = await this.trackRepository.delete(trackId);
 
-    if (this._tracks.length !== filteredTracks.length) {
-      this._tracks = filteredTracks;
-    } else {
+    if (result.affected === 0) {
       throw new NotFoundException('Track not found.');
     }
   }
 
-  resetAlbumId(trackId: string, albumId: string) {
-    const track = this.getById(trackId);
+  async resetTrackId(trackId: string, albumId: string) {
+    const track = await this.getById(trackId);
 
     if (track.albumId === albumId) {
       track.albumId = null;
     }
   }
 
-  resetArtistId(trackId: string, artistId: string) {
-    const track = this.getById(trackId);
+  async resetArtistId(trackId: string, artistId: string) {
+    const track = await this.getById(trackId);
 
     if (track.artistId === artistId) {
       track.artistId = null;
