@@ -17,11 +17,11 @@ export class FavsController {
   ) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     const tracks = this.trackService.findAll();
     const artists = this.artistService.findAll();
     const albums = this.albumService.findAll();
-    return this.favsService.findAll(tracks, artists, albums);
+    return this.favsService.findAll(tracks, artists, await albums);
   }
 
   // track
@@ -54,15 +54,15 @@ export class FavsController {
 
   // album
   @Post('album/:id')
-  addAlbum(@Param() id: string) {
+  async addAlbum(@Param() id: string) {
     const albums = this.albumService.findAll();
-    return this.favsService.addAlbum(id, albums);
+    return this.favsService.addAlbum(id, await albums);
   }
 
   @Delete('album/:id')
   @HttpCode(204)
-  removeAlbum(@Param() id: string) {
+  async removeAlbum(@Param() id: string) {
     const albums = this.albumService.findAll();
-    return this.favsService.removeAlbum(id, albums);
+    return this.favsService.removeAlbum(id, await albums);
   }
 }

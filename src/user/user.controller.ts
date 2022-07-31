@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 
 @ApiTags('User')
 @Controller('user')
@@ -25,7 +25,7 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Successful',
-    type: User,
+    type: UserEntity,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   create(@Body() createUserDto: CreateUserDto) {
@@ -37,7 +37,7 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successful',
-    type: User,
+    type: UserEntity,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   findAll() {
@@ -50,7 +50,7 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successful',
-    type: User,
+    type: UserEntity,
   })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,

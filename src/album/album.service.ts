@@ -7,36 +7,40 @@ import {
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { v4 as uuidv4, validate } from 'uuid';
-import { Album } from './entities/album.entity';
-
+import { AlbumEntity } from './entities/album.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 @Injectable()
 export class AlbumService {
-  private _albums: Album[] = [];
+  constructor(
+    @InjectRepository(AlbumEntity)
+    private albumRepository: Repository<AlbumEntity>,
+  ) {}
 
-  create(dto: CreateAlbumDto) {
+  async create(dto: CreateAlbumDto) {
     const { name, artistId, year } = dto;
 
     if (!name) {
       throw new HttpException('Empty required fields', HttpStatus.BAD_REQUEST);
     }
 
-    const id = uuidv4();
-    const createdAt: string = new Date(Date.now()).toDateString();
-    const updatedAt: string = new Date(Date.now()).toDateString();
-    const album = new Album(id, name, year, artistId);
-    this._albums.push(album);
-    return album;
+    const createdAlbum = this.albumRepository.create({
+      name,
+      artistId,
+      year,
+    });
+
+    return await this.albumRepository.save(createdAlbum);
   }
 
-  findAll() {
-    return this._albums;
+  async findAll() {
+    return await this.albumRepository.find();
   }
 
-  getById(albumId: string) {
-    if (!validate(albumId)) {
-      throw new HttpException('Not valid album id', HttpStatus.BAD_REQUEST);
-    }
-    const findAlbum = this._albums.find((user) => user.id === albumId);
+  async getById(albumId: string) {
+    const findAlbum = await this.albumRepository.findOne({
+      where: { id: albumId },
+    });
 
     if (!findAlbum) {
       throw new NotFoundException('Album not found.');
@@ -45,14 +49,11 @@ export class AlbumService {
     return findAlbum;
   }
 
-  update(albumUniqueId: string, dto: UpdateAlbumDto) {
-    if (!validate(albumUniqueId)) {
-      throw new HttpException('Not valid album id', HttpStatus.BAD_REQUEST);
-    }
-
-    const index = this._albums.findIndex((album) => album.id == albumUniqueId);
-
-    if (index === -1) {
+  async update(albumUniqueId: string, dto: UpdateAlbumDto) {
+    const updatedAlbum = await this.albumRepository.findOne({
+      where: { id: albumUniqueId },
+    });
+    if (!updatedAlbum) {
       throw new NotFoundException('album not found.');
     }
 
@@ -66,26 +67,19 @@ export class AlbumService {
       );
     }
 
-    const { id, name, artistId, year } = this._albums[index];
-
-    this._albums[index] = new Album(
-      id,
-      dto.name || name,
-      dto.year || year,
-      dto.artistId || artistId || null,
-    );
-    return this._albums[index];
+    Object.assign(updatedAlbum, dto);
+    return updatedAlbum;
   }
 
-  delete(albumId: string) {
-    if (!validate(albumId)) {
-      throw new HttpException('Not valid album id', HttpStatus.BAD_REQUEST);
-    }
-    const filteredAlbums = this._albums.filter((album) => album.id != albumId);
-
-    if (this._albums.length !== filteredAlbums.length) {
-      this._albums = filteredAlbums;
-    } else {
+  async delete(albumId: string) {
+    const result = await this.albumRepository.delete(albumId);
+    //   if (this._users.length !== filteredUsers.length) {
+    //     this._users = filteredUsers;
+    //   } else {
+    //     throw new NotFoundException('User not found.');
+    //   }
+    // }
+    if (result.affected === 0) {
       throw new NotFoundException('Album not found.');
     }
   }

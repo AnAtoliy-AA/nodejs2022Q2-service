@@ -7,11 +7,11 @@ import {
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { v4 as uuidv4, validate } from 'uuid';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './entities/artist.entity';
+import { ArtistEntity } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistService {
-  private _artists: Artist[] = [];
+  private _artists: ArtistEntity[] = [];
 
   create(dto: CreateArtistDto) {
     const { name, grammy } = dto;
@@ -23,7 +23,7 @@ export class ArtistService {
     const id = uuidv4();
     const createdAt: string = new Date(Date.now()).toDateString();
     const updatedAt: string = new Date(Date.now()).toDateString();
-    const artist = new Artist(id, name, grammy);
+    const artist = new ArtistEntity(id, name, grammy);
     this._artists.push(artist);
     return artist;
   }
@@ -70,7 +70,7 @@ export class ArtistService {
 
     const { id, name, grammy } = this._artists[index];
 
-    this._artists[index] = new Artist(
+    this._artists[index] = new ArtistEntity(
       id,
       dto.name || name,
       dto.grammy || grammy,

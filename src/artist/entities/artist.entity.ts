@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Artist {
+export class ArtistEntity {
   @PrimaryGeneratedColumn()
   @ApiProperty({ description: 'Artist identifier uuid v4', nullable: false })
   id: string;

@@ -14,7 +14,7 @@ import { TrackService } from 'src/track/track.service';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './entities/artist.entity';
+import { ArtistEntity } from './entities/artist.entity';
 
 @ApiTags('Artist')
 @Controller('artist')
@@ -34,7 +34,7 @@ export class ArtistController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successful',
-    type: Artist,
+    type: ArtistEntity,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   findAll() {
@@ -47,7 +47,7 @@ export class ArtistController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successful',
-    type: Artist,
+    type: ArtistEntity,
   })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,

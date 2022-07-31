@@ -1,4 +1,4 @@
-import { Track } from './entities/track.entity';
+import { TrackEntity } from './entities/track.entity';
 import {
   Controller,
   Get,
@@ -25,7 +25,7 @@ export class TrackController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Successful',
-    type: Track,
+    type: TrackEntity,
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   create(@Body() createTrackDto: CreateTrackDto) {

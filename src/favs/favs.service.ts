@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Track } from 'src/track/entities/track.entity';
-import { Artist } from 'src/artist/entities/artist.entity';
-import { Album } from 'src/album/entities/album.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
+import { ArtistEntity } from 'src/artist/entities/artist.entity';
+import { AlbumEntity } from 'src/album/entities/album.entity';
 import { Favorites, FavoritesResponse, Resource } from './entities/fav.entity';
 
 @Injectable()
@@ -13,9 +13,9 @@ export class FavsService {
   };
 
   findAll(
-    tracks: Track[],
-    artists: Artist[],
-    albums: Album[],
+    tracks: TrackEntity[],
+    artists: ArtistEntity[],
+    albums: AlbumEntity[],
   ): FavoritesResponse {
     return {
       artists: artists.filter((artist) =>
@@ -52,18 +52,18 @@ export class FavsService {
     return true;
   }
 
-  addTrack(id: string, tracks: Track[]) {
+  addTrack(id: string, tracks: TrackEntity[]) {
     const track = this.validateResourceAndGetById(id, {
       data: tracks,
       type: 'track',
-    }) as Track;
+    }) as TrackEntity;
 
     this.favs.tracksIds.push(id);
 
     return track;
   }
 
-  removeTrack(id: string, tracks: Track[]) {
+  removeTrack(id: string, tracks: TrackEntity[]) {
     this.validateResourceAndDeleteById(id, {
       data: tracks,
       type: 'track',
@@ -75,18 +75,18 @@ export class FavsService {
   }
 
   // artist
-  addArtist(id: string, artists: Artist[]) {
+  addArtist(id: string, artists: ArtistEntity[]) {
     const artist = this.validateResourceAndGetById(id, {
       data: artists,
       type: 'artist',
-    }) as Artist;
+    }) as ArtistEntity;
 
     this.favs.artistsIds.push(id);
 
     return artist;
   }
 
-  removeArtist(id: string, artists: Artist[]) {
+  removeArtist(id: string, artists: ArtistEntity[]) {
     this.validateResourceAndDeleteById(id, {
       data: artists,
       type: 'artist',
@@ -98,18 +98,18 @@ export class FavsService {
   }
 
   // album
-  addAlbum(id: string, albums: Album[]) {
+  addAlbum(id: string, albums: AlbumEntity[]) {
     const album = this.validateResourceAndGetById(id, {
       data: albums,
       type: 'album',
-    }) as Album;
+    }) as AlbumEntity;
 
     this.favs.albumsIds.push(id);
 
     return album;
   }
 
-  removeAlbum(id: string, albums: Album[]) {
+  removeAlbum(id: string, albums: AlbumEntity[]) {
     this.validateResourceAndDeleteById(id, {
       data: albums,
       type: 'album',

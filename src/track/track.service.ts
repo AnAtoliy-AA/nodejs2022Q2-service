@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Track } from './entities/track.entity';
+import { TrackEntity } from './entities/track.entity';
 import { v4 as uuidv4, validate } from 'uuid';
 
 @Injectable()
 export class TrackService {
-  private _tracks: Track[] = [];
+  private _tracks: TrackEntity[] = [];
 
   create(dto: CreateTrackDto) {
     const { name, artistId, albumId, duration } = dto;
@@ -23,7 +23,7 @@ export class TrackService {
     const id = uuidv4();
     const createdAt: string = new Date(Date.now()).toDateString();
     const updatedAt: string = new Date(Date.now()).toDateString();
-    const track = new Track(
+    const track = new TrackEntity(
       id,
       name,
       artistId || null,
@@ -83,7 +83,7 @@ export class TrackService {
 
     const updatedAt: string = new Date(Date.now()).toDateString();
 
-    this._tracks[index] = new Track(
+    this._tracks[index] = new TrackEntity(
       id,
       dto.name || name,
       dto.artistId || artistId || null,

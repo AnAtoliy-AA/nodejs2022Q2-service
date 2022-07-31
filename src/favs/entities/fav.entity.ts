@@ -1,6 +1,6 @@
-import { Album } from 'src/album/entities/album.entity';
-import { Artist } from 'src/artist/entities/artist.entity';
-import { Track } from 'src/track/entities/track.entity';
+import { AlbumEntity } from 'src/album/entities/album.entity';
+import { ArtistEntity } from 'src/artist/entities/artist.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
 
 export interface Favorites {
   artistsIds: Array<string>;
@@ -9,12 +9,12 @@ export interface Favorites {
 }
 
 export interface FavoritesResponse {
-  artists: Array<Artist>;
-  albums: Array<Album>;
-  tracks: Array<Track>;
+  artists: Array<ArtistEntity>;
+  albums: Array<AlbumEntity>;
+  tracks: Array<TrackEntity>;
 }
 
 export interface Resource {
-  data: Array<Artist | Album | Track>;
+  data: Array<ArtistEntity | AlbumEntity | TrackEntity>;
   type: string;
 }

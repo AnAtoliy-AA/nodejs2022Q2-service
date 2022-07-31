@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class UserEntity {
   // @PrimaryGeneratedColumn()
   @PrimaryGeneratedColumn()
   @ApiProperty({ description: 'User identifier uuid v4', nullable: false })

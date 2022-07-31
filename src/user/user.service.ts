@@ -6,15 +6,15 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { v4 as uuidv4, validate } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async create(dto: CreateUserDto) {
@@ -47,7 +47,7 @@ export class UserService {
     // delete result.password;
     // return result;
     // return user;
-    return await (await this.userRepository.save(createdUser)).toResponse();
+    return (await this.userRepository.save(createdUser)).toResponse();
   }
 
   async findAll() {
@@ -57,9 +57,6 @@ export class UserService {
   }
 
   async getById(userId: string) {
-    if (!validate(userId)) {
-      throw new HttpException('Not valid user id', HttpStatus.BAD_REQUEST);
-    }
     // const findUser = this._users.find((user) => user.id === userId);
 
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -73,9 +70,6 @@ export class UserService {
   }
 
   async update(userUniqueId: string, dto: UpdateUserDto) {
-    if (!validate(userUniqueId)) {
-      throw new HttpException('Not valid user id', HttpStatus.BAD_REQUEST);
-    }
     if (!dto.newPassword || !dto.oldPassword) {
       throw new HttpException(
         {
@@ -115,9 +109,6 @@ export class UserService {
   }
 
   async delete(userId: string) {
-    if (!validate(userId)) {
-      throw new HttpException('Not valid user id', HttpStatus.BAD_REQUEST);
-    }
     // const filteredUsers = this._users.filter((user) => user.id !== userId);
     const result = await this.userRepository.delete(userId);
     //   if (this._users.length !== filteredUsers.length) {
