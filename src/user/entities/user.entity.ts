@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -17,7 +18,8 @@ export class UserEntity {
   @ApiProperty({ description: 'User login', nullable: false })
   login: string;
 
-  @Column()
+  @Exclude()
+  @Column({ type: 'varchar' })
   @ApiProperty({ description: 'User password', nullable: false })
   password: string;
 
@@ -39,6 +41,9 @@ export class UserEntity {
   })
   updatedAt: number;
 
+  @Column({ type: 'timestamp', nullable: true, default: null })
+  public lastLoginAt: Date | null;
+
   constructor(
     id: string,
     login: string,
@@ -46,6 +51,7 @@ export class UserEntity {
     version: number,
     createdAt: number,
     updatedAt: number,
+    lastLoginAt: Date | null,
   ) {
     this.id = id;
     this.login = login;
@@ -53,6 +59,7 @@ export class UserEntity {
     this.version = version;
     this.createdAt = +createdAt;
     this.updatedAt = +updatedAt;
+    this.lastLoginAt = lastLoginAt;
   }
 
   toResponse() {

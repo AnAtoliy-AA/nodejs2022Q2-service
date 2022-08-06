@@ -10,6 +10,7 @@ import { AlbumModule } from './album/album.module';
 import { FavsModule } from './favs/favs.module';
 import { DatabaseModule } from './database/database.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import configService from '../ormconfig';
 
 @Module({
@@ -33,6 +34,7 @@ import configService from '../ormconfig';
     }),
     TypeOrmModule.forRoot(configService),
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
