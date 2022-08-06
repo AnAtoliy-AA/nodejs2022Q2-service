@@ -2,11 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import 'reflect-metadata';
+import { MyLogger } from './logger.service';
 // import { connectionSource } from 'ormconfig';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
   const port = +process.env.PORT || 4000;
+
+  app.useLogger(app.get(MyLogger));
+
   app.setGlobalPrefix('api');
   console.log('Port running on: ', port);
   const config = new DocumentBuilder()
